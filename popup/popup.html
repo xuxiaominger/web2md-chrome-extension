@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web2MD</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      width: 380px;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 200px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .header h1 {
+      color: white;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .header p {
+      color: rgba(255,255,255,0.8);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      font-size: 14px;
+      background: rgba(255,255,255,0.95);
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: white;
+    }
+
+    .btn-convert {
+      padding: 10px 24px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.3s;
+    }
+
+    .btn-convert:hover {
+      background: #c0392b;
+      transform: translateY(-2px);
+    }
+
+    .btn-convert:disabled {
+      background: #95a5a6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .result-area {
+      display: none;
+    }
+
+    .result-area.show {
+      display: block;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .result-title {
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+    }
+
+    .btn-copy {
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-copy:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    textarea {
+      width: 100%;
+      height: 180px;
+      padding: 10px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 12px;
+      resize: none;
+      background: rgba(255,255,255,0.95);
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: white;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      color: white;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .spinner {
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 8px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .tips {
+      margin-top: 12px;
+      padding: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.8);
+      font-size: 11px;
+    }
+
+    .tips strong {
+      display: block;
+      margin-bottom: 4px;
+      color: white;
+    }
+
+    .site-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+      font-size: 10px;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔗 Web2MD</h1>
+    <p>网页转Markdown</p>
+  </div>
+
+  <div class="input-group">
+    <input type="text" id="urlInput" placeholder="当前页面URL或输入其他链接...">
+    <button class="btn-convert" id="convertBtn" onclick="convert()">🔴 转换</button>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>正在提取页面内容...</p>
+  </div>
+
+  <div class="result-area" id="resultArea">
+    <div class="result-header">
+      <span class="result-title" id="resultTitle"></span>
+      <button class="btn-copy" id="copyBtn" onclick="copyResult()">📋 复制</button>
+    </div>
+    <textarea id="output" readonly></textarea>
+  </div>
+
+  <div class="tips">
+    <strong>💡 提示</strong>
+    • 点击转换当前页面内容<br>
+    • 支持微信公众号、知乎等特殊网站<br>
+    • 复制结果后可在 Obsidian 中粘贴
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
